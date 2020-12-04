@@ -60,14 +60,23 @@ blogPostRouter.get('/:author',(request,response,next)=>{
 
 
 //route for getting all posts by a common title,not working
-blogPostRouter.get('/:title',(request,response,next)=>{
-    const title = request.params.title;
-     BlogPost.find({title:title}).then(res=>{
-         response.status(200).send(res)
-         next();
-     })
- })
+blogPostRouter.get('/:title',(req,res)=>{
+    const title = req.params.title;
+    
+     //const result = await BlogPost.find({title:"my first book"});
+        //  .then(res=>{
+        //  res.status(200).send(res)})
 
+        //  .catch(err=>{
+        //      throw new Error (err)
+        //  } )
+       // res.status()
+      res.json("ghgyhjg")
+     // console.log(result);
+       
+     
+ })
+   
  //route for updating a post content and number of votes
  blogPostRouter.patch('/:id',async(req,res)=>{
      try{
