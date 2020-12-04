@@ -21,7 +21,7 @@ mongoose.connect(process.env.MONGODB_URI,config)
     }
 )
 .catch(err=>{
-    console.log("Some problem occured")
+    console.log("Some problem occured", err)
 })
 //route for login
 // app.post("/login",(request,response)=>{
@@ -43,6 +43,6 @@ app.use('/user',userRouter);
 app.use('/posts',blogPostRouter);
 
 app.listen(process.env.PORT,()=>{
-    console.log("My app is running on this server")
+    console.log("My app is running on this server on port",process.env.PORT)
 })
 
