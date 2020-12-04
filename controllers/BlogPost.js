@@ -1,5 +1,8 @@
 const blogPostRouter = require('express').Router();
+const { isValidObjectId } = require('mongoose');
+const mongoose= require ('mongoose');
 const BlogPost = require('../models/BlogPost');
+const ObjectID = require('mongodb').ObjectID;
 
 
 //route for getting all posts
@@ -14,11 +17,8 @@ blogPostRouter.get('/',(request,response,next)=>{
 
 //route for creating a post
 blogPostRouter.post('/',async(request,response)=>{
-
-    const{author,title,content}= request.body;
-   
+    const{author,title,content}= request.body;   
     console.log(request.body.title);
-
     if (author && title && content){
         const blogPostCount = await BlogPost.countDocuments();     
          const newBlogPost =  new BlogPost({
@@ -68,19 +68,59 @@ blogPostRouter.get('/:title',(request,response,next)=>{
      })
  })
 
- //route for updating a post
- blogPostRouter.put('/:id',async(request,response,next)=>{
-    const id = request.params.id;
-    const content=request.body.content;
-    const newBlogPost= BlogPost.find({_id:id});
-    then(
-           newBlogPost.update(content);
-        res=>{
-         response.status(200).send(res)
-         next();
-     })
+ //route for updating a post content and number of votes
+ blogPostRouter.patch('/:id',async(req,res)=>{
+     try{
+
+        let _id = new ObjectID(req.params.id)         
+		const post=await BlogPost.findOne({ _id: _id}).exec();
+               
+		if (req.body.content&& req.body.upvotes && req.body.downvotes ) {
+            post.content = req.body.content
+            post.upvotes = req.body.upvotes
+            post.downvotes = req.body.downvotes
+		}
+       	post.save()
+		res.send(post)
+        }
+      catch{
+        res.status(404)
+		res.send({ error: "Post doesn't exist!" })
+      }
  })
+
+//method2
+ blogPostRouter.patch('/update/:id',async(req,res)=>{
+    try{
+
+       const _id = new ObjectID(req.params.id)         
+       await BlogPost.update({ _id: _id},{$set:{
+         content:req.body.content,
+         upvotes: req.body.upvotes,
+         downvotes:req.body.downvotes
+       }})
+       BlogPost.save()
+       res.send(BlogPost)
+       }
+     catch{
+       res.status(404)
+       res.send({ error: "Post doesn't exist!" })
+     }
+})
+
+
+ //route for deleting a post
+ blogPostRouter.delete('/:id',async(req,res)=>{
+    try {
+        let _id = new ObjectID(req.params.id) 
+		await BlogPost.deleteOne({ _id: req.params._id })
+		res.status(204).send("Succesffuly deleted")
+	} catch {
+		res.status(404)
+		res.send({ error: "Post doesn't exist!" })
+	}
+ })
+
 
 module.exports = blogPostRouter;
 
-//use patch for update instead of put

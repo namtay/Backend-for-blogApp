@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 
 const blogPostSchema = new mongoose.Schema({
+
     author:{
         type:String,
         required:true,
