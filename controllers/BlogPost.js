@@ -50,7 +50,7 @@ blogPostRouter.post('/',async(request,response)=>{
 
 
 //route for getting all posts by a specific author
-blogPostRouter.get('/:author',(request,response,next)=>{
+blogPostRouter.get('/author/:author',(request,response,next)=>{
    const author= request.params.author;
     BlogPost.find({author:author}).then(res=>{
         response.status(200).send(res)
@@ -60,20 +60,16 @@ blogPostRouter.get('/:author',(request,response,next)=>{
 
 
 //route for getting all posts by a common title,not working
-blogPostRouter.get('/:title',(req,res)=>{
+blogPostRouter.get('/book/:title',async(req,res)=>{
     const title = req.params.title;
-    
-     //const result = await BlogPost.find({title:"my first book"});
-        //  .then(res=>{
-        //  res.status(200).send(res)})
-
-        //  .catch(err=>{
-        //      throw new Error (err)
-        //  } )
-       // res.status()
-      res.json("ghgyhjg")
-     // console.log(result);
-       
+     try {
+        const result = await BlogPost.find({title});
+        // console.log(result);
+        res.status(200).send(result)
+     } 
+     catch(err) {
+         throw new Error(err);
+    }
      
  })
    
