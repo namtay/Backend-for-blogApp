@@ -63,7 +63,7 @@ blogPostRouter.get('/author/:author',(request,response,next)=>{
 blogPostRouter.get('/book/:title',async(req,res)=>{
     const title = req.params.title;
      try {
-        const result = await BlogPost.find({title});
+        const result = await BlogPost.find({title:title});
         // console.log(result);
         res.status(200).send(result)
      } 
